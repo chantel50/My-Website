@@ -1,5 +1,10 @@
 name: Glow Beauty website CI
 
+permissions:
+  contents: read
+  pages: write
+  id-token: write
+  
 on:
   push:
     branches:
@@ -16,3 +21,26 @@ jobs:
         run: |
           test -f index.html
           test -f style.css
+
+      - name: cCnfigure pages
+        uses: actions/configure-pages@v5
+
+      - name: Upload website files
+        uses: actions/upload-pages-artifact@v3
+        with: 
+          path:
+
+deploy:
+  needs: check-website
+  runs-on: ubuntu-latest
+  permissions:
+    pages: write 
+    id-token: write
+  environment:
+    name: github-pages
+    url: ${{steps.deployment.outputs.pages_url}}
+  steps:
+    - name: Deploy to Github pages
+      id: deployment
+      uses: actions/deploy-pages@v4  
+
